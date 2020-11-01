@@ -182,7 +182,8 @@ class BiEncoderAttentionWithRationaleClassification(nn.Module):
 		inputs_embeds_RP=None,
 		empathy_labels=None,
 		rationale_labels=None,
-		lambda_=0.1
+		lambda_EI=1,
+		lambda_RE=0.1
 	):
 		outputs_SP = self.seeker_encoder.roberta(
 			input_ids_SP,
@@ -231,7 +232,7 @@ class BiEncoderAttentionWithRationaleClassification(nn.Module):
 			loss_fct = CrossEntropyLoss()
 			loss_empathy = loss_fct(logits_empathy.view(-1, self.empathy_num_labels), empathy_labels.view(-1))
 
-		loss = loss_empathy + lambda_ * loss_rationales
+		loss = lambda_EI * loss_empathy + lambda_RE * loss_rationales
 
 		outputs = (loss, loss_empathy, loss_rationales) + outputs
 
