@@ -63,8 +63,8 @@ batch_size | `int` | `32` | batch size
 epochs | `int` | `4` | number of epochs
 seed_val | `int` | `12` | seed value
 train_path | `str` | `""` | path to input training data
-dev_path | `str` | `"` | path to input validation data
-test_path | `str` | `"` | path to input test data
+dev_path | `str` | `""` | path to input validation data
+test_path | `str` | `""` | path to input test data
 do_validation | `boolean` | `False` | If set True, compute results on the validation data
 do_test | `boolean` | `False` | If set True, compute results on the test data
 save_model | `boolean` | `False` | If set True, save the trained model  
