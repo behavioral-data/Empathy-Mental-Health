@@ -113,7 +113,7 @@ input_ids_SP = torch.tensor(tokenizer_SP['input_ids'])
 attention_masks_SP = torch.tensor(tokenizer_SP['attention_mask'])
 
 
-labels = df.labels.values.astype(int)
+labels = df.level.values.astype(int)
 labels = torch.tensor(labels)
 rationales = df.rationale_labels.values.tolist()
 rationales = torch.stack(rationales, dim=0)

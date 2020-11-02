@@ -22,13 +22,13 @@ csv_writer = csv.writer(output_file, delimiter = ',',quotechar='"')
 
 next(csv_reader, None) # skip the header
 
-csv_writer.writerow(["id","seeker_post","response_post","labels","rationale_labels","rationale_labels_trimmed","response_post_masked"])
+csv_writer.writerow(["id","seeker_post","response_post","level","rationale_labels","rationale_labels_trimmed","response_post_masked"])
 
 for row in csv_reader:
-	# "id","seeker_post","response_post","label","rationale"
+	# sp_id,rp_id,seeker_post,response_post,level,rationales
 
-	seeker_post = row[1].strip()
-	response = row[2].strip()
+	seeker_post = row[2].strip()
+	response = row[3].strip()
 
 	response_masked = response
 
@@ -44,7 +44,7 @@ for row in csv_reader:
 
 	response_words_position = np.zeros((len(response),), dtype=np.int32)
 
-	rationales = row[4].strip().split('|')
+	rationales = row[5].strip().split('|')
 
 	rationale_labels = np.zeros((len(response_words),), dtype=np.int32)
 
@@ -88,7 +88,7 @@ for row in csv_reader:
 	rationale_labels_str_trimmed = ','.join(str(x) for x in rationale_labels[1:len(response_non_padded_words)])
 
 
-	csv_writer.writerow([row[0], seeker_post, response, row[3], rationale_labels_str, len(rationale_labels_str_trimmed), response_masked])
+	csv_writer.writerow([row[0] + '_' + row[1], seeker_post, response, row[4], rationale_labels_str, len(rationale_labels_str_trimmed), response_masked])
 
 input_file.close()
 output_file.close()
