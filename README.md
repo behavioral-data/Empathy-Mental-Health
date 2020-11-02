@@ -1,7 +1,7 @@
 # Empathy in Text-based Mental Health Support
 This repository contains codes and dataset access instructions for the [EMNLP 2020 publication](https://arxiv.org/pdf/2009.08441) on understanding empathy expressed in text-based mental health support.
 
-If this code helps you in your research, please cite the following publication:
+If this code or dataset helps you in your research, please cite the following publication:
 ```bash
 @inproceedings{sharma2020empathy,
     title={A Computational Approach to Understanding Empathy Expressed in Text-Based Mental Health Support},
@@ -29,17 +29,7 @@ $ pip install -r requirements.txt
 
 
 ### 2. Prepare dataset
-A sample raw input data file is available in [dataset/sample_input_ER.csv](dataset/sample_input_ER.csv). This csv file contains five columns:
-```
-sp_id: Seeker post identifier
-rp_id: Response post identifier
-seeker_post: A support seeking post from an online user
-response_post: A response/reply posted in response to the seeker_post
-level: Empathy level of the response_post in the context of the seeker_post
-rationales: Portions of the response_post that are supporting evidences or rationales for the identified empathy level. Multiple portions are delimited by '|'
-```
-
-This file (and other raw input files of similar format) can be converted into a format that is recognized by the model using with following command:
+A sample raw input data file is available in [dataset/sample_input_ER.csv](dataset/sample_input_ER.csv). This file (and other raw input files in the [dataset](dataset) folder) can be converted into a format that is recognized by the model using with following command:
 ```
 $ python3 src/process_data.py --input_path dataset/sample_input_ER.csv --output_path dataset/sample_input_model_ER.csv
 ```
@@ -47,11 +37,20 @@ $ python3 src/process_data.py --input_path dataset/sample_input_ER.csv --output_
 ### 3. Training the model
 For training our model on the sample input data, run the following command:
 ```
-./train.sh
+python3 src/train.py \
+	--train_path=dataset/sample_input_model_ER.csv \
+	--lr=2e-5 \
+	--batch_size=32 \
+	--lambda_EI=1.0 \
+	--lambda_RE=0.5 \
+	--save_model \
+	--save_model_path=output/sample.pth
 ```
 
 
-## Configuring hyperparameters
+## Training Arguments
+
+The training script accepts the following arguments: 
 
 Argument | Type | Default value | Description
 ---------|------|---------------|------------
@@ -70,3 +69,18 @@ do_validation | `boolean` | `False` | If set True, compute results on the valida
 do_test | `boolean` | `False` | If set True, compute results on the test data
 save_model | `boolean` | `False` | If set True, save the trained model  
 save_model_path | `str` | `""` | path to save model 
+
+
+## Dataset Access Instructions
+
+The Reddit portion of our collected dataset is available inside the [dataset](dataset) folder. The csv files with annotations on the three empathy communication mechanisms are `emotional-reactions-reddit.csv`, `interpretations-reddit.csv`, and `explorations-reddit.csv`. Each csv file contains five columns:
+```
+sp_id: Seeker post identifier
+rp_id: Response post identifier
+seeker_post: A support seeking post from an online user
+response_post: A response/reply posted in response to the seeker_post
+level: Empathy level of the response_post in the context of the seeker_post
+rationales: Portions of the response_post that are supporting evidences or rationales for the identified empathy level. Multiple portions are delimited by '|'
+```
+
+
