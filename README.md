@@ -73,7 +73,7 @@ save_model_path | `str` | `""` | path to save model
 
 ## Dataset Access Instructions
 
-The Reddit portion of our collected dataset is available inside the [dataset](dataset) folder. The csv files with annotations on the three empathy communication mechanisms are `emotional-reactions-reddit.csv`, `interpretations-reddit.csv`, and `explorations-reddit.csv`. Each csv file contains five columns:
+The Reddit portion of our collected dataset is available inside the [dataset](dataset) folder. The csv files with annotations on the three empathy communication mechanisms are `emotional-reactions-reddit.csv`, `interpretations-reddit.csv`, and `explorations-reddit.csv`. Each csv file contains six columns:
 ```
 sp_id: Seeker post identifier
 rp_id: Response post identifier
