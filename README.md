@@ -37,7 +37,7 @@ $ python3 src/process_data.py --input_path dataset/sample_input_ER.csv --output_
 ### 3. Training the model
 For training our model on the sample input data, run the following command:
 ```
-python3 src/train.py \
+$ python3 src/train.py \
 	--train_path=dataset/sample_input_model_ER.csv \
 	--lr=2e-5 \
 	--batch_size=32 \
