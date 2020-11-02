@@ -141,12 +141,12 @@ class BiEncoderAttentionWithRationaleClassification(nn.Module):
 		self.apply(self._init_weights)
 
 		self.seeker_encoder = SeekerEncoder.from_pretrained(
-								"../Empathy-Models/Pretraining-Tasks/pretrained-talklife-roberta-seeker/checkpoint-169000/", # Use the 12-layer BERT model, with an uncased vocab.
+								"roberta-base", # Use the 12-layer BERT model, with an uncased vocab.
 								output_attentions = False, # Whether the model returns attentions weights.
 								output_hidden_states = False)
 
 		self.responder_encoder = ResponderEncoder.from_pretrained(
-								"../Empathy-Models/Pretraining-Tasks/pretrained-talklife-roberta-response/checkpoint-293000/", # Use the 12-layer BERT model, with an uncased vocab.
+								"roberta-base", # Use the 12-layer BERT model, with an uncased vocab.
 								output_attentions = False, # Whether the model returns attentions weights.
 								output_hidden_states = False)
 

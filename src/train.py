@@ -62,7 +62,7 @@ print("=============================================")
 '''
 Use GPU if available
 '''
-if torch.cuda.is_available():    
+if torch.cuda.is_available():
 	device = torch.device("cuda")
 else:
 	print('No GPU available, using the CPU instead.')

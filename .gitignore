@@ -131,3 +131,5 @@ dmypy.json
 requirements_pip.txt
 output
 output/*
+
+sample_input_model_ER.csv
