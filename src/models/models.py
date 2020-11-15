@@ -215,6 +215,9 @@ class BiEncoderAttentionWithRationaleClassification(nn.Module):
 		logits_rationales = self.rationale_classifier(sequence_output)
 		outputs = (logits_empathy,logits_rationales) + outputs_RP[2:]
 
+		loss_rationales = 0.0
+		loss_empathy = 0.0
+
 		if rationale_labels is not None:
 			loss_fct = CrossEntropyLoss()
 			# Only keep active parts of the loss
@@ -232,9 +235,9 @@ class BiEncoderAttentionWithRationaleClassification(nn.Module):
 			loss_fct = CrossEntropyLoss()
 			loss_empathy = loss_fct(logits_empathy.view(-1, self.empathy_num_labels), empathy_labels.view(-1))
 
-		loss = lambda_EI * loss_empathy + lambda_RE * loss_rationales
+			loss = lambda_EI * loss_empathy + lambda_RE * loss_rationales
 
-		outputs = (loss, loss_empathy, loss_rationales) + outputs
+			outputs = (loss, loss_empathy, loss_rationales) + outputs
 
 		return outputs  # (loss), (scores_empathy, scores_rationales), (hidden_states), (attentions)
 

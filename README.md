@@ -47,6 +47,16 @@ $ python3 src/train.py \
 	--save_model_path=output/sample.pth
 ```
 
+### 4. Testing the model
+For testing our model on the sample test input, run the following command:
+```
+$ python3 src/test.py \
+	--input_path dataset/sample_test_input.csv \
+	--output_path dataset/sample_test_output.csv \
+	--ER_model_path output/sample.pth \
+	--IP_model_path output/sample.pth \
+	--EX_model_path output/sample.pth
+```
 
 ## Training Arguments
 
