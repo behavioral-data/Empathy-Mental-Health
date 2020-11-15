@@ -93,4 +93,5 @@ level: Empathy level of the response_post in the context of the seeker_post
 rationales: Portions of the response_post that are supporting evidences or rationales for the identified empathy level. Multiple portions are delimited by '|'
 ```
 
+For accessing the TalkLife portion of our dataset for non-commercial use, please contact the TalkLife team [here](mailto:research@talklife.co). 
 
