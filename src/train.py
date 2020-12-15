@@ -128,7 +128,7 @@ if args.do_validation:
 	val_input_ids_SP = torch.tensor(val_tokenizer_SP['input_ids'])
 	val_attention_masks_SP = torch.tensor(val_tokenizer_SP['attention_mask'])
 
-	val_labels = torch.tensor(df_val.labels.values.astype(int))
+	val_labels = torch.tensor(df_val.level.values.astype(int))
 	val_rationales = df_val.rationale_labels.values.tolist()
 	val_rationales = torch.stack(val_rationales, dim=0)
 	val_rationales_trimmed = torch.tensor(df_val.rationale_labels_trimmed.values.astype(int))
@@ -142,7 +142,7 @@ if args.do_test:
 	test_input_ids_SP = torch.tensor(test_tokenizer_SP['input_ids'])
 	test_attention_masks_SP = torch.tensor(test_tokenizer_SP['attention_mask'])
 
-	test_labels = torch.tensor(df_test.labels.values.astype(int))
+	test_labels = torch.tensor(df_test.level.values.astype(int))
 	test_rationales = df_test.rationale_labels.values.tolist()
 	test_rationales = torch.stack(test_rationales, dim=0)
 	test_rationales_trimmed = torch.tensor(df_test.rationale_labels_trimmed.values.astype(int))

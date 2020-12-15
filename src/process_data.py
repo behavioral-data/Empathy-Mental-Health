@@ -60,7 +60,7 @@ for row in csv_reader:
 
 	
 
-	if len(rationales) == 0 or row[3].strip() == '':
+	if len(rationales) == 0 or row[5].strip() == '':
 		rationale_labels[1:len(response_non_padded_words)] = 1
 		response_masked = ''
 
