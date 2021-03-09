@@ -140,3 +140,5 @@ dataset/*-model.csv
 src/divide-into-train-test-dev.py
 
 weights/*
+
+notebooks/*
