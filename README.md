@@ -48,14 +48,14 @@ $ python3 src/train.py \
 ```
 
 ### 4. Testing the model
-For testing our model on the sample test input, run the following command:
+For testing our model on the sample test input, run the following command from nlpg01, replacing sample_text_{in, out}put.csv with a file we used, such as political_tweets.csv (input) and output_political_tweets.csv:
 ```
 $ python3 src/test.py \
-	--input_path dataset/sample_test_input.csv \
-	--output_path dataset/sample_test_output.csv \
-	--ER_model_path output/sample.pth \
-	--IP_model_path output/sample.pth \
-	--EX_model_path output/sample.pth
+	--input_path dataset/political_tweets.csv \
+	--output_path dataset/political_output.csv \
+	--ER_model_path /local1/emazuh/output/reddit-emotion-pretrained.pth \
+	--IP_model_path /local1/emazuh/output/reddit-interpretation-pretrained.pth \
+	--EX_model_path /local1/emazuh/output/reddit-exploration-pretrained.pth
 ```
 
 ## Training Arguments
