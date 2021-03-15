@@ -34,6 +34,12 @@ A sample raw input data file is available in [dataset/sample_input_ER.csv](datas
 $ python3 src/process_data.py --input_path dataset/sample_input_ER.csv --output_path dataset/sample_input_model_ER.csv
 ```
 
+To process the medical dataset, run the following command to convert the .txt files from the medical data to a .csv that the model will recognize. The input should be the location of the .txt files that you downloaded (see Dataset Access Instructions for link):
+```
+$ python3 src/med_process_data.py --input_path local1/zsteineh/med_dataset/ --output_path local1/zsteineh/med_dataset/test_med_data.csv
+```
+Note, the test_med_data.csv file is already processed and available at local1/zsteineh/med_dataset/ on nlpg01. We do not provide it in GitHub as the file is too large.
+
 ### 3. Training the model
 For training our model on the sample input data, run the following command:
 ```
@@ -48,7 +54,7 @@ $ python3 src/train.py \
 ```
 
 ### 4. Testing the model
-For testing our model on the sample test input, run the following command from nlpg01, replacing sample_text_{in, out}put.csv with a file we used, such as political_tweets.csv (input) and output_political_tweets.csv:
+For testing our model on the sample test input, run the following command from nlpg01, replacing sample_text_{in, out}put.csv with a file we used, such as political_tweets.csv or test_med_data.csv (input) and output_political_tweets.csv:
 ```
 $ python3 src/test.py \
 	--input_path dataset/political_tweets.csv \
@@ -94,4 +100,15 @@ rationales: Portions of the response_post that are supporting evidences or ratio
 ```
 
 For accessing the TalkLife portion of our dataset for non-commercial use, please contact the TalkLife team [here](mailto:research@talklife.co). 
+
+We also test the model on the medical dataset from the paper below:
+```bash
+@article{chen2020meddiag,
+  title={MedDialog: a large-scale medical dialogue dataset},
+  author={Chen, Shu and Ju, Zeqian and Dong, Xiangyu and Fang, Hongchao and Wang, Sicheng and Yang, Yue and Zeng, Jiaqi and Zhang, Ruisi and Zhang, Ruoyu and Zhou, Meng and Zhu, Penghui and Xie, Pengtao},
+  journal={arXiv preprint arXiv:2004.03329}, 
+  year={2020}
+}
+```
+The English part of the dataset, which we used, is available [here] (https://drive.google.com/drive/folders/1g29ssimdZ6JzTST6Y8g6h-ogUNReBtJD?usp=sharing). 
 
