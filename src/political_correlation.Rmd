@@ -1,0 +1,129 @@
+---
+title: "CSE 517 Political Analysis"
+output: html_notebook
+---
+
+```{r include=FALSE}
+library(lme4)
+library(car)
+library(MASS)
+# library(plyr)
+# library(dplyr)
+library(ggplot2)
+library(multcomp) # for glht, mcp
+library(emmeans) # for emm, emmeans
+```
+
+
+```{r}
+calculateBetas <- function(model){
+    Vcov <- vcov(model, useScale = False)
+    betas <- round(coefficients(model), 3)
+    se <- round(sqrt(diag(Vcov)), 3)
+    zval <- round(betas / se, 3)
+    pval <- round(2*pnorm(abs(zval), lower.tail = FALSE), 3)
+    ## print everything
+    cbind(betas, se, zval, pval)
+}
+
+summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE, conf.interval=.975) {
+    library(doBy)
+    
+    # New version of length which can handle NA's: if na.rm==T, don't count them
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+    
+    # Collapse the data
+    formula <- as.formula(paste(measurevar, paste(groupvars, collapse=" + "), sep=" ~ "))
+    datac <- summaryBy(formula, data=data, FUN=c(length2,mean,sd), na.rm=na.rm)
+    
+    # Rename columns
+    names(datac)[ names(datac) == paste(measurevar, ".mean",    sep="") ] <- measurevar
+    names(datac)[ names(datac) == paste(measurevar, ".sd",      sep="") ] <- "sd"
+    names(datac)[ names(datac) == paste(measurevar, ".length2", sep="") ] <- "N"
+    
+    datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
+    
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval: 
+    # e.g., if conf.interval is .95, use .975 (above/below), and use df=N-1
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+    
+    return(datac)
+}
+```
+
+```{r}
+setwd("~/repos/Empathy-Mental-Health/dataset")
+df <- read.csv("political_outputc.csv")
+df$ER_label <- ordered(df$ER_label)
+df$EX_label <- ordered(df$EX_label)
+df$IP_label <- ordered(df$IP_label)
+df$conv_type <- factor(df$conv_type)
+df <- df[df$conv_type  == 'between' | df$conv_type  == 'within',]
+```
+
+```{r}
+m = glm(conv_type ~  ER_label + EX_label + IP_label, data=df, family=binomial)
+m = glm(conv_type ~  EX_label + IP_label, data=df, family=binomial)
+Anova(m, type=3) #removed type = 3 due to errors - double check
+```
+
+```{r}
+calculateBetas(m)
+```
+
+```{r}
+summary(glht(m, emm(pairwise ~ EX_label + IP_label)), test=adjusted(type="holm"))
+```
+
+```{r}
+graphdf1 <- summarySE(df,  measurevar="EX_label", groupvars=c('conv_type'))
+levels(graphdf1$conv_type)[levels(graphdf1$conv_type)=="between"] <- "Political Outgroup"
+levels(graphdf1$conv_type)[levels(graphdf1$conv_type)=="within"] <- "Political Ingroup"
+names(graphdf1)[names(graphdf1) == "sd"] <- "ER.sd"
+names(graphdf1)[names(graphdf1) == "se"] <- "ER.se"
+names(graphdf1)[names(graphdf1) == "ci"] <- "ER.ci"
+
+graphdf2 <- summarySE(df,  measurevar="IP_label", groupvars=c('conv_type'))
+levels(graphdf2$conv_type)[levels(graphdf2$conv_type)=="between"] <- "Political Outgroup"
+levels(graphdf2$conv_type)[levels(graphdf2$conv_type)=="within"] <- "Political Ingroup"
+names(graphdf2)[names(graphdf2) == "sd"] <- "IP.sd"
+names(graphdf2)[names(graphdf2) == "se"] <- "IP.se"
+names(graphdf2)[names(graphdf2) == "ci"] <- "IP.ci"
+graphdf2 <- graphdf2[c('conv_type', 'IP_label', "IP.sd", "IP.se", "IP.ci")]
+
+graphdf <- join(graphdf1, graphdf2, by='conv_type')
+```
+
+```{r}
+ERcolor <- "#007BA7"
+IPcolor <- "#FDA470"
+# #007BA7","#FDA470","#B7410E"
+
+ggplot(graphdf, aes(x=conv_type)) +
+  
+  geom_point(aes(y=IP_label), color=IPcolor) + geom_errorbar(aes(ymin=IP_label-IP.se, ymax=IP_label+IP.se), width=.3, position=position_dodge(.4), color=IPcolor) +
+  geom_point(aes(y=EX_label), color=ERcolor) + geom_errorbar(aes(ymin=EX_label-ER.se, ymax=EX_label+ER.se), width=.3, position=position_dodge(.4), color=ERcolor) +
+  
+  scale_y_continuous(
+    # Features of the first axis
+    name = "Interpretations",
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*1, name="Explorations")
+  ) +
+    xlab("Conversation Type") +
+
+  theme(
+    axis.title.y = element_text(color = ERcolor, size=13),
+    axis.title.y.right = element_text(color = IPcolor, size=13),
+  ) +
+  ggtitle("Interpretations and Explorations by Political Conversation Type")
+
+
+```
+
+
