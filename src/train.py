@@ -28,6 +28,7 @@ parser.add_argument("--lr", default=2e-5, type=float, help="learning rate")
 parser.add_argument("--lambda_EI", default=0.5, type=float, help="lambda_identification")
 parser.add_argument("--lambda_RE", default=0.5, type=float, help="lambda_rationale")
 parser.add_argument("--dropout", default=0.1, type=float, help="dropout")
+parser.add_argument("--data_percent", default=1, type=float, help="training data percent")
 parser.add_argument("--max_len", default=64, type=int, help="maximum sequence length")
 parser.add_argument("--batch_size", default=32, type=int, help="batch size")
 parser.add_argument("--epochs", default=4, type=int, help="number of epochs")
@@ -38,6 +39,8 @@ parser.add_argument("--test_path", type=str, help="path to input test data")
 parser.add_argument("--do_validation", action="store_true")
 parser.add_argument("--do_test", action="store_true")
 parser.add_argument("--save_model", action="store_true")
+parser.add_argument("--no_domain_pretraining", action="store_true")
+parser.add_argument("--no_attention", action="store_true")
 parser.add_argument("--save_model_path", type=str, help="path to save model")
 
 args = parser.parse_args()
@@ -53,8 +56,12 @@ print('batch_size = ', args.batch_size)
 print('epochs = ', args.epochs)
 print('seed_val = ', args.seed_val)
 print('train_path = ', args.train_path)
+print('data_percent = ', args.data_percent)
+print('no_domain_pretraining = ', args.no_domain_pretraining)
+print('no_attention = ', args.no_attention)
 print('do_validation = ', args.do_validation)
 print('do_test = ', args.do_test)
+print('data_percent = ', args.data_percent)
 
 print("=============================================")
 
@@ -63,7 +70,7 @@ print("=============================================")
 Use GPU if available
 '''
 if torch.cuda.is_available():
-	device = torch.device("cuda")
+        device = torch.device("cuda")
 else:
 	print('No GPU available, using the CPU instead.')
 	device = torch.device("cpu")
@@ -73,8 +80,9 @@ else:
 Load input dataset
 '''
 if args.train_path:
-	df = pd.read_csv(args.train_path, delimiter=',')
-	df['rationale_labels'] = df['rationale_labels'].apply(lambda s: torch.tensor(np.asarray([int(i) for i in s.split(',')]), dtype=torch.long))
+        df = pd.read_csv(args.train_path, delimiter=',')
+        df['rationale_labels'] = df['rationale_labels'].apply(lambda s: torch.tensor(np.asarray([int(i) for i in s.split(',')]), dtype=torch.long))
+        df = df[:int(len(df)*args.data_percent)]
 else:
 	print('No input training data specified.')
 	print('Exiting...')
@@ -151,7 +159,9 @@ if args.do_test:
 '''
 Load model
 '''
-model = BiEncoderAttentionWithRationaleClassification(hidden_dropout_prob=args.dropout)
+use_domain_pretraining = not args.no_domain_pretraining
+use_attention = not args.no_attention
+model = BiEncoderAttentionWithRationaleClassification(hidden_dropout_prob=args.dropout, use_domain_pretraining=use_domain_pretraining, use_attention=use_attention)
 model = model.to(device)
 
 '''
@@ -161,6 +171,7 @@ params = list(model.named_parameters())
 for p in model.seeker_encoder.parameters():
 	p.requires_grad = False
 
+# print('Number of parameters', sum(p.numel() for p in model.parameters()))
 
 optimizer = AdamW(model.parameters(),
 				  lr = args.lr,
@@ -171,9 +182,13 @@ optimizer = AdamW(model.parameters(),
 '''
 Training schedule
 '''
+def seed_worker(worker_id):
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 train_dataset = TensorDataset(input_ids_SP, attention_masks_SP, input_ids_RP, attention_masks_RP, labels, rationales)
 train_size = int(len(train_dataset))
-train_dataloader = DataLoader(train_dataset, sampler = RandomSampler(train_dataset), batch_size = args.batch_size)
+train_dataloader = DataLoader(train_dataset, sampler = RandomSampler(train_dataset), batch_size = args.batch_size, worker_init_fn=seed_worker)
 
 if args.do_validation:
 	val_dataset = TensorDataset(val_input_ids_SP, val_attention_masks_SP, val_input_ids_RP, val_attention_masks_RP, val_labels, val_rationales, val_rationales_trimmed)
@@ -199,11 +214,13 @@ random.seed(args.seed_val)
 np.random.seed(args.seed_val)
 torch.manual_seed(args.seed_val)
 torch.cuda.manual_seed_all(args.seed_val)
+torch.backends.cudnn.deterministic = True
 
 
 '''
 Do Training
 '''
+start_time = time.time()
 for epoch_i in range(0, args.epochs):
 	total_train_loss = 0
 	total_train_empathy_loss = 0
@@ -430,5 +447,6 @@ if args.do_test:
 
 	avg_test_loss = total_eval_loss / len(test_dataloader)
 
+print('time taken: ', time.time() - start_time)
 if args.save_model:
 	torch.save(model.state_dict(), args.save_model_path)
