@@ -110,5 +110,12 @@ We also test the model on the medical dataset from the paper below:
   year={2020}
 }
 ```
-The English part of the dataset, which we used, is available at: https://drive.google.com/drive/folders/1g29ssimdZ6JzTST6Y8g6h-ogUNReBtJD?usp=sharing 
+The English part of the dataset, which we used, is available at: https://drive.google.com/drive/folders/1g29ssimdZ6JzTST6Y8g6h-ogUNReBtJD?usp=sharing
+
+
+## Reproduced Results
+
+The tables below show the reproducibility results of the main points of the paper.
+![Reproducibility Results of Aims 1 and 2](https://github.com/emma-mens/Empathy-Mental-Health/blob/reproducibility/table_imgs/Aim1_reproduce.png?raw=True)
+![Reproducibility Results of Aim 3](https://github.com/emma-mens/Empathy-Mental-Health/blob/reproducibility/table_imgs/Aim3_reproduce.png?raw=True)
 
