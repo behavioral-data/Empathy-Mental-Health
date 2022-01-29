@@ -148,4 +148,19 @@ class EmpathyClassifier():
 			logits_empathy_EX = logits_empathy_EX.detach().cpu().numpy().tolist()
 			predictions_EX = np.argmax(logits_empathy_EX, axis=1).flatten()
 
-		return (logits_empathy_ER, predictions_ER, logits_empathy_IP, predictions_IP, logits_empathy_EX, predictions_EX)
+
+			logits_rationale_ER = logits_rationale_ER.detach().cpu().numpy()
+			predictions_rationale_ER = np.argmax(logits_rationale_ER, axis=2)
+
+			logits_rationale_IP = logits_rationale_IP.detach().cpu().numpy()
+			predictions_rationale_IP = np.argmax(logits_rationale_IP, axis=2)
+
+			logits_rationale_EX = logits_rationale_EX.detach().cpu().numpy()
+			predictions_rationale_EX = np.argmax(logits_rationale_EX, axis=2)
+
+		return (logits_empathy_ER, predictions_ER, \
+		 	logits_empathy_IP, predictions_IP, \
+			logits_empathy_EX, predictions_EX, \
+			logits_rationale_ER, predictions_rationale_ER, \
+			logits_rationale_IP, predictions_rationale_IP, \
+			logits_rationale_EX,predictions_rationale_EX)
