@@ -44,8 +44,10 @@ $ python3 src/train.py \
 	--lambda_EI=1.0 \
 	--lambda_RE=0.5 \
 	--save_model \
-	--save_model_path=output/sample.pth
+	--save_model_path=output/sample_ER.pth
 ```
+
+**Note:** You may need to create an `output` folder in the main directory before running this command.
 
 ### 4. Testing the model
 For testing our model on the sample test input, run the following command:
@@ -53,9 +55,9 @@ For testing our model on the sample test input, run the following command:
 $ python3 src/test.py \
 	--input_path dataset/sample_test_input.csv \
 	--output_path dataset/sample_test_output.csv \
-	--ER_model_path output/sample.pth \
-	--IP_model_path output/sample.pth \
-	--EX_model_path output/sample.pth
+	--ER_model_path output/sample_ER.pth \
+	--IP_model_path output/sample_IP.pth \
+	--EX_model_path output/sample_EX.pth
 ```
 
 ## Training Arguments
