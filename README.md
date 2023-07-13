@@ -49,6 +49,45 @@ $ python3 src/train.py \
 
 **Note:** You may need to create an `output` folder in the main directory before running this command.
 
+For training the models on the full Reddit dataset, these are the three commands you can run for Emotional Reactions, Interpretations, and Explorations respectively:
+
+**1. Emotional Reactions**
+```
+python3 src/train.py \
+--train_path=dataset/emotional-reactions-reddit.csv \
+--lr=2e-5 \
+--batch_size=32 \
+--lambda_EI=1.0 \
+--lambda_RE=0.5 \
+--save_model \
+--save_model_path=output/reddit_ER.pth
+```
+
+ **2. Interpretations**
+```
+python3 src/train.py \
+--train_path=dataset/interpretations-reddit.csv \
+--lr=2e-5 \
+--batch_size=32 \
+--lambda_EI=1.0 \
+--lambda_RE=0.5 \
+--save_model \
+--save_model_path=output/reddit_IP.pth
+```
+
+**3. Explorations**
+```
+python3 src/train.py \
+--train_path=dataset/explorations-reddit.csv \
+--lr=2e-5 \
+--batch_size=32 \
+--lambda_EI=1.0 \
+--lambda_RE=0.5 \
+--save_model \
+--save_model_path=output/reddit_EX.pth
+```
+
+
 ### 4. Testing the model
 For testing our model on the sample test input, run the following command:
 ```
